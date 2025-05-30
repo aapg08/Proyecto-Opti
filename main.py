@@ -56,9 +56,9 @@ def cargar_datos():
 
     datos = {
         "S": S, "L": L, "T": T, "alpha": alpha, "Tipos luminarias": tipos_luminarias,
-        "presupuesto": presupuesto, "CM_l":CM_l, "K_s": K_s, "Ns_max": Ns_max, "P_min_s": P_min_s,
+        "B": presupuesto, "CM_l":CM_l, "K_s": K_s, "Ns_max": Ns_max, "P_min_s": P_min_s,
         "P_max_s":P_max_s, "Sectores":num_sectores, "V": V, "R":R, "G":G, "F":F, "p_l": p_l, "b_l":b_l,
-        "Eficiencia": eficiencia, "Costo compra e instalación": costo_compra
+        "Eficiencia": eficiencia, "C_l": costo_compra
     }
     return datos
 
@@ -85,9 +85,30 @@ def construir_model(data):
     #Función Objetivo
     model.setObjective(quicksum(x_s_l_t[s, l, t]*data["alpha"][s]*data["b_l"][l] for s in S for l in L for t in T))
 
+    #R1 No superar el presupuesto de municipio: Flujo de caja
+    t = 1 
+    model.addConstr(
+        j_t[t] == data["B"]
+        - quicksum(data["C_l"][l] * x_s_l_t[s, l, t] for s in S for l in L)
+        - quicksum(data["CM_l"][l] * u_s_l_t[s, l, t] for s in S for l in L)
+        - wi_t[t] - we_t[t] - wf_t[t],
+        name="Flujo_caja_t1"
+    )
+    for t in T:
+        if t == 1:
+            continue  # Esta restricción aplica solo para t >= 2
+
+        model.addConstr(
+            j_t[t] == j_t[t-1]
+            - quicksum(data["C_l"][l] * x_s_l_t[s, l, t] for s in S for l in L)
+            - quicksum(data["CM_l"][l] * u_s_l_t[s, l, t] for s in S for l in L)
+            - wi_t[t] - we_t[t] - wf_t[t],
+            name="presupuesto_t"
+        )
     #R2 Activación de la mantención solo si se instala la luminaria
     model.addConstrs((u_s_l_t[s, l, t] <= x_s_l_t[s,l,t] for s in S for l in L for t in T), name="xandu") 
-
+    #R3
+    
     return model 
 
 def resolver_modelo (model):
@@ -95,11 +116,16 @@ def resolver_modelo (model):
     return model
 
 def imprimir(model):
-    pass
+    if model.Status == GRB.OPTIMAL:
+        print(f"Valor óptimo de la función objetivo: {model.ObjVal:.2f}")
+    else:
+        print("No se encontró una solución óptima.")
 
 def main():
     data = cargar_datos()
     modelo = construir_model(data)
+    resultado = resolver_modelo(modelo)
+    imprimir(resultado)
 
 if __name__ == "__main__":
     main()
