@@ -114,15 +114,17 @@ def construir_model(data):
     #R4:  Límite de luces por sector
     model.addConstrs((sum(x_s_l_t[s, l, t] for s in S for l in L for t in T)<=data["Ns_max"][s] for s in S), name = "limite_luces")
     #R5: Compatibilidad luminaria con el sector
-    model.addConstrs((x_s_l_t[s, l ,t]<=L_l_s*data["M"] for s in S for l in L for t in T), name="compatibilidad")
+    model.addConstrs((x_s_l_t[s, l ,t]<=L_l_s[l,s]*data["M"] for s in S for l in L for t in T), name="compatibilidad")
     #R6:Vinculo variable x-y
     model.addConstrs((y_s_l_t[s, l, t] <= x_s_l_t[s,l,t] for s in S for l in L for s in S), name= "vinculo x-y") 
     model.addConstrs((x_s_l_t[s,l,t]<=data["M"] for s in S for l in L for t in T), name= "vinculo_big_M")
     #R7: Límite de distintos tipos de luminarias por sector
     model.addConstrs((sum(y_s_l_t[s,l,t] for s in S for l in L for t in T)<= data["K_s"][s] for s in S))
     #R8: Activar desuento asociado a superar la iluminación permitida
-    model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)>= data["I_s_max"][s]*zi_s_t for s in S), name = "iluminacion maxima")
-    model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)<= data["I_s_max"][s] + data["M"]*zi_s_t for s in S), name = "iluminacion maxima 2")
+    model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)>= data["P_max_s"][s]*zi_s_t[s,t] for s in S for t in T), name = "iluminacion maxima")
+    model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)<= data["P_max_s"][s] + data["M"]*zi_s_t[s,t] for s in S for t in T), name = "iluminacion maxima 2")
+    #R9: descuento asociado a la iluminacion permitido:
+    model.addConstrs((wi_t<=zi_s_t for t in T for s in S))
     return model 
 
 def resolver_modelo (model):
