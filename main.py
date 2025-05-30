@@ -15,7 +15,6 @@ def cargar_datos():
     tipos_luminarias = luminarias_ex["Indice"]
     CM_l = luminarias["CM_l"]
     costo_compra = luminarias["Costo de compra e instalacion"]
-    b_l = luminarias["b_l"]
     eficiencia = luminarias["Eficiencia"]
     p_l = luminarias["p_l"]
 
@@ -41,6 +40,7 @@ def cargar_datos():
     Ns_max = sectores["Ns_max"]
     P_min_s = sectores["P_min_s"]
     P_max_s = sectores["P_max_s"]
+    M = 1e6
 
     #############################################
     #############################################
@@ -57,8 +57,8 @@ def cargar_datos():
     datos = {
         "S": S, "L": L, "T": T, "alpha": alpha, "Tipos luminarias": tipos_luminarias,
         "B": presupuesto, "CM_l":CM_l, "K_s": K_s, "Ns_max": Ns_max, "P_min_s": P_min_s,
-        "P_max_s":P_max_s, "Sectores":num_sectores, "V": V, "R":R, "G":G, "F":F, "p_l": p_l, "b_l":b_l,
-        "Eficiencia": eficiencia, "C_l": costo_compra
+        "P_max_s":P_max_s, "Sectores":num_sectores, "V": V, "R":R, "G":G, "F":F, "p_l": p_l,
+        "Eficiencia": eficiencia, "C_l": costo_compra, "M":M
     }
     return datos
 
@@ -83,7 +83,7 @@ def construir_model(data):
     j_t = model.addVars(T, name = "j_t", lb = 0)
 
     #Función Objetivo
-    model.setObjective(quicksum(x_s_l_t[s, l, t]*data["alpha"][s]*data["b_l"][l] for s in S for l in L for t in T))
+    model.setObjective(quicksum(x_s_l_t[s, l, t]*data["alpha"][s]*data["p_l"][l] for s in S for l in L for t in T))
 
     #R1 No superar el presupuesto de municipio: Flujo de caja
     t = 1 
@@ -107,7 +107,17 @@ def construir_model(data):
         )
     #R2 Activación de la mantención solo si se instala la luminaria
     model.addConstrs((u_s_l_t[s, l, t] <= x_s_l_t[s,l,t] for s in S for l in L for t in T), name="xandu") 
-    #R3
+    #R3: Mínimo de iluminación diaria
+    model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T) >= data["P_min_s"][s] for s in S for t in T), name = "min_iluminacion_diaria")
+    #R4:  Límite de luces por sector
+    model.addConstrs((sum(x_s_l_t[s, l, t] for s in S for l in L for t in T)<=data["Ns_max"][s] for s in S), name = "limite_luces")
+    #R5: Compatibilidad luminaria con el sector
+
+    #R6:
+    model.addConstrs((y_s_l_t[s, l, t] <= x_s_l_t[s,l,t] for s in S for l in L for s in S), name= "vinculo x-y") 
+    model.addConstrs((x_s_l_t[s,l,t]<=data["M"] for s in S for l in L for t in T), name= "vinculo_big_M")
+    #R7: Límite de distintos tipos de luminarias por sector
+    model.addConstrs((sum(y_s_l_t[s,l,t] for s in S for l in L for t in T)<= data["K_s"][s] for s in S))
     
     return model 
 
