@@ -76,11 +76,11 @@ def construir_model(data):
     y_s_l_t = model.addVars(S, L, T, vtype= GRB.BINARY, name = "y_s_l_t")
     u_s_l_t = model.addVars(S, L, T,vtype= GRB.BINARY, name = "u_s_l_t")
     zi_s_t = model.addVars(S, T,vtype= GRB.BINARY, name = "zi_s_t")
-    ze_t = model.addVars(T,vtype= GRB.BINARY, name = "ze_t")
-    zf_t = model.addVars(T,vtype= GRB.BINARY, name = "zf_t")
-    wi_t = model.addVars(T, name = "wi_t", lb = 0)
-    we_t = model.addVars(T, name = "we_t", lb = 0)
-    wf_t = model.addVars(T, name = "wf_t", lb = 0)
+    ze_s_t = model.addVars(S,T,vtype= GRB.BINARY, name = "ze_t")
+    zf_s_t = model.addVars(S,T,vtype= GRB.BINARY, name = "zf_t")
+    wi_s_t = model.addVars(S,T, name = "wi_t", lb = 0)
+    we_s_t = model.addVars(S,T, name = "we_t", lb = 0)
+    wf_s_t = model.addVars(S,T, name = "wf_t", lb = 0)
     j_t = model.addVars(T, name = "j_t", lb = 0)
     L_l_s = model.addVars(L,S, vtype=GRB.BINARY, name = "L_l_s")
 
@@ -93,7 +93,7 @@ def construir_model(data):
         j_t[t] == data["B"]
         - quicksum(data["C_l"][l] * x_s_l_t[s, l, t] for s in S for l in L)
         - quicksum(data["CM_l"][l] * u_s_l_t[s, l, t] for s in S for l in L)
-        - wi_t[t] - we_t[t] - wf_t[t],
+        - quicksum(wi_s_t[s,t] for s in S) - quicksum(we_s_t[s,t] for s in S) + quicksum(wf_s_t[s,t] for s in S),
         name="Flujo_caja_t1"
     )
     for t in T:
@@ -104,7 +104,7 @@ def construir_model(data):
             j_t[t] == j_t[t-1]
             - quicksum(data["C_l"][l] * x_s_l_t[s, l, t] for s in S for l in L)
             - quicksum(data["CM_l"][l] * u_s_l_t[s, l, t] for s in S for l in L)
-            - wi_t[t] - we_t[t] - wf_t[t],
+            - quicksum(wi_s_t[s,t] for s in S for t in T) - quicksum(we_s_t[s,t] for s in S for t in T) + quicksum(wf_s_t[s,t] for s in S for t in T),
             name="presupuesto_t"
         )
     #R2 Activación de la mantención solo si se instala la luminaria
@@ -124,7 +124,14 @@ def construir_model(data):
     model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)>= data["P_max_s"][s]*zi_s_t[s,t] for s in S for t in T), name = "iluminacion maxima")
     model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)<= data["P_max_s"][s] + data["M"]*zi_s_t[s,t] for s in S for t in T), name = "iluminacion maxima 2")
     #R9: descuento asociado a la iluminacion permitido:
-    model.addConstrs((wi_t<=zi_s_t for t in T for s in S))
+    model.addConstrs((wi_s_t[s,t]<=zi_s_t[s,t]*data["M"] for t in T for s in S), name = "descuento por iluminacion")
+    model.addConstrs((wi_s_t[s,t]<= data["G"]*sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)), name= "dcto por ilumnacion")
+    #R10: Activación del descuento 
+    model.addConstrs((sum(data["Eficiencia"]*x_s_l_t[s, l, t] + data["M"]*ze_s_t[s,t] for s in S for l in L for t in T)>=data["R"]*ze_s_t[t] for s in S for t in T), name="activacion dcto")
+    #R11: Definición de dcto. asociado a la eficiencia energética 
+    #model.addConstrs((we_t[t]<=(1-ze_t[t])))
+    #R12: Activación de bonificación en caso de usar luminarias
+    model.addConstrs(sum(x_s_l_t[s,l,t] for s in S for l in L for t in T)>= data["F"]*zf_s_t[s,t] for s in S for t in T)
     return model 
 
 def resolver_modelo (model):
