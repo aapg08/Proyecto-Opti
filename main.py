@@ -18,6 +18,8 @@ def cargar_datos():
     eficiencia = luminarias["Eficiencia"]
     p_l = luminarias["p_l"]
     iluminancia_max = luminarias["Iluminancia maxima"]
+    luminarias_solares_ex = luminarias_ex[luminarias_ex["Fuente de energia"] == "solar"]
+    l_solar = luminarias_solares_ex["Indice"].tolist()
 
     #Compatibilidad por sector
     compatibilidad_ex = lectura("compatibilidad.csv")
@@ -27,6 +29,8 @@ def cargar_datos():
     parametros = parametros_ex.to_dict(orient="records")
     #Parámetros extra del modelo
     presupuesto = parametros[0]["Valor"]
+    Ae = parametros[5]["Valor"]
+    Af = parametros[6]["Valor"]
     V = parametros[4]["Valor"]
     F = parametros[3]["Valor"]
     G = parametros[2]["Valor"]
@@ -59,7 +63,8 @@ def cargar_datos():
         "S": S, "L": L, "T": T, "alpha": alpha, "Tipos luminarias": tipos_luminarias,
         "B": presupuesto, "CM_l":CM_l, "K_s": K_s, "Ns_max": Ns_max, "P_min_s": P_min_s,
         "P_max_s":P_max_s, "Sectores":num_sectores, "V": V, "R":R, "G":G, "F":F, "p_l": p_l,
-        "Eficiencia": eficiencia, "C_l": costo_compra, "M":M, "I_s_max": iluminancia_max
+        "Eficiencia": eficiencia, "C_l": costo_compra, "M":M, "I_s_max": iluminancia_max, 
+        "L*": l_solar, "Ae": Ae, "Af": Af
     }
     return datos
 
