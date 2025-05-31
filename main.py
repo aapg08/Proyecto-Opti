@@ -19,7 +19,8 @@ def cargar_datos():
     p_l = luminarias["p_l"]
     iluminancia_max = luminarias["Iluminancia maxima"]
     luminarias_solares_ex = luminarias_ex[luminarias_ex["Fuente de energia"] == "solar"]
-    l_solar = luminarias_solares_ex["Indice"].tolist()
+    l_solar_aux = luminarias_solares_ex["Indice"].tolist()
+    l_solar = range(1, len(l_solar_aux) + 1)
 
     #Compatibilidad por sector
     compatibilidad_ex = lectura("compatibilidad.csv")
@@ -72,6 +73,7 @@ def construir_model(data):
     S = data["S"]
     L = data["L"]
     T = data["T"]
+    L_solar = data["L*"]
     model = Model("Proyecto E2")
     model.Params.OutputFlag=0
 
@@ -134,11 +136,14 @@ def construir_model(data):
     #R10: Activación del descuento 
     model.addConstrs((sum(data["Eficiencia"][l] * x_s_l_t[s,l,t] + data["M"]*ze_s_t[s,t] for l in L)>=data["R"] for s in S for t in T), name= "activación dcto")
     #R11: Definición de dcto. asociado a la eficiencia energética 
-    #model.addConstrs((we_t[t]<=(1-ze_t[t])))
+    model.addConstrs((we_s_t[s, t] <= data["Ae"]*ze_s_t[s, t] for s in S for t in T), name = "descuento eficiencia")
+    model.addConstrs((we_s_t[s, t] >= data["Ae"]*ze_s_t[s, t] for s in S for t in T), name = "descuento eficiencia")
     #R12: Activación de bonificación en caso de usar luminarias
-    model.addConstrs(quicksum(x_s_l_t[s,l,t] for s in S for l in L for t in T)>= data["F"]*zf_s_t[s,t] for s in S for t in T)
+    model.addConstrs(quicksum(x_s_l_t[s,l,t] for s in S for l in L_solar for t in T)>= data["F"]*zf_s_t[s,t] for s in S for t in T)
     #R13: Definición de bono en caso de usar luminarias tipo l*
-    return model 
+    model.addConstrs((wf_s_t[s, t] <= data["Af"]*zf_s_t[s, t] for s in S for t in T), name = "bono solar")
+    model.addConstrs((wf_s_t[s, t] >= data["Af"]*zf_s_t[s, t] for s in S for t in T), name = "bono solar")
+    return model
 
 def resolver_modelo (model):
     model.optimize()
