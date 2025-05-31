@@ -125,13 +125,14 @@ def construir_model(data):
     model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)<= data["P_max_s"][s] + data["M"]*zi_s_t[s,t] for s in S for t in T), name = "iluminacion maxima 2")
     #R9: descuento asociado a la iluminacion permitido:
     model.addConstrs((wi_s_t[s,t]<=zi_s_t[s,t]*data["M"] for t in T for s in S), name = "descuento por iluminacion")
-    model.addConstrs((wi_s_t[s,t]<= data["G"]*sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)), name= "dcto por ilumnacion")
+    model.addConstrs((wi_s_t[s,t] <= data["G"]*sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T) for s in S), name= "dcto por ilumnacion")
     #R10: Activación del descuento 
-    model.addConstrs((sum(data["Eficiencia"]*x_s_l_t[s, l, t] + data["M"]*ze_s_t[s,t] for s in S for l in L for t in T)>=data["R"]*ze_s_t[t] for s in S for t in T), name="activacion dcto")
+    model.addConstrs((sum(data["Eficiencia"][l] * x_s_l_t[s,l,t] + data["M"]*ze_s_t[s,t] for l in L)>=data["R"] for s in S for t in T), name= "activación dcto")
     #R11: Definición de dcto. asociado a la eficiencia energética 
     #model.addConstrs((we_t[t]<=(1-ze_t[t])))
     #R12: Activación de bonificación en caso de usar luminarias
-    model.addConstrs(sum(x_s_l_t[s,l,t] for s in S for l in L for t in T)>= data["F"]*zf_s_t[s,t] for s in S for t in T)
+    model.addConstrs(quicksum(x_s_l_t[s,l,t] for s in S for l in L for t in T)>= data["F"]*zf_s_t[s,t] for s in S for t in T)
+    #R13: Definición de bono en caso de usar luminarias tipo l*
     return model 
 
 def resolver_modelo (model):
