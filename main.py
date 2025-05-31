@@ -143,23 +143,41 @@ def construir_model(data):
     #R13: Definición de bono en caso de usar luminarias tipo l*
     model.addConstrs((wf_s_t[s, t] <= data["Af"]*zf_s_t[s, t] for s in S for t in T), name = "bono solar")
     model.addConstrs((wf_s_t[s, t] >= data["Af"]*zf_s_t[s, t] for s in S for t in T), name = "bono solar")
-    return model
+    return model, x_s_l_t
 
 def resolver_modelo (model):
     model.optimize()
     return model
 
-def imprimir(model):
+def imprimir(model,data,x_s_l_t):
     if model.Status == GRB.OPTIMAL:
-        print(f"Valor óptimo de la función objetivo: {model.ObjVal:.2f}")
+        # Información general del modelo
+        print("Características del modelo:")
+        print(f"- Valor objetivo: {model.ObjVal:.2f}")
+        if model.IsMIP:
+            print(f"- GAP final: {model.MIPGap:.4f}")
+        print(f"- Tiempo de resolución: {model.Runtime:.2f} segundos")
+        print(f"- Nº variables: {model.NumVars}")
+        print(f"- Nº restricciones: {model.NumConstrs}")
+        print(f"- Dimensiones: |S|={len(data['S'])}, |L|={len(data['L'])}, |T|={len(data['T'])}\n")
+
+        # Imprimir solo variables activas
+        print("Luminarias instaladas (x_s_l_t > 0):")
+        for s in data["S"]:
+            for l in data["L"]:
+                for t in data["T"]:
+                    val = x_s_l_t[s, l, t].X
+                    if val > 1e-6:
+                        print(f"- Sector {s}, Luminaria {l}, Periodo {t}: {val:.2f} unidades")
+
     else:
         print("No se encontró una solución óptima.")
 
 def main():
     data = cargar_datos()
-    modelo = construir_model(data)
+    modelo, x = construir_model(data)
     resultado = resolver_modelo(modelo)
-    imprimir(resultado)
+    imprimir(resultado,data,x)
 
 if __name__ == "__main__":
     main() 
