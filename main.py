@@ -44,9 +44,22 @@ def cargar_datos():
     alpha = sectores["alpha"]
     K_s = sectores["K_s"]
     Ns_max = sectores["Ns_max"]
-    P_min_s = sectores["P_min_s"]
-    P_max_s = sectores["P_max_s"]
+    # P_min_s = sectores["P_min_s"]
+    # P_max_s = sectores["P_max_s"]
     M = 1e6
+
+    periodos_ex = lectura("periodos.csv")
+    P_min_s_t = {}
+    P_max_s_t = {}
+    for _, row in periodos_ex.iterrows():
+        s = int(row["Sectores"])
+        t = int(row["Periodos"])
+        P_min_s_t[(s, t)] = row["P_min_s_t"]
+        P_max_s_t[(s, t)] = row["P_max_s_t"]
+    # periodos = periodos_ex.to_dict()
+    # P_min_s = periodos["P_min_s_t"]
+    # P_max_s = periodos["P_max_s_t"]
+    
 
     #############################################
     #############################################
@@ -58,12 +71,13 @@ def cargar_datos():
     #Conjunto de tipos de luminarias
     L = range(1,len(tipos_luminarias))
     #Conjunto de periodos
-    T = range(1,10)
+    # T = range(1,10)
+    T = sorted(list(set(row["Periodos"] for _, row in periodos_ex.iterrows())))
 
     datos = {
         "S": S, "L": L, "T": T, "alpha": alpha, "Tipos luminarias": tipos_luminarias,
-        "B": presupuesto, "CM_l":CM_l, "K_s": K_s, "Ns_max": Ns_max, "P_min_s": P_min_s,
-        "P_max_s":P_max_s, "Sectores":num_sectores, "V": V, "R":R, "G":G, "F":F, "p_l": p_l,
+        "B": presupuesto, "CM_l":CM_l, "K_s": K_s, "Ns_max": Ns_max, "P_min_s": P_min_s_t,
+        "P_max_s":P_max_s_t, "Sectores":num_sectores, "V": V, "R":R, "G":G, "F":F, "p_l": p_l,
         "Eficiencia": eficiencia, "C_l": costo_compra, "M":M, "I_s_max": iluminancia_max, 
         "L*": l_solar, "Ae": Ae, "Af": Af
     }
@@ -119,7 +133,7 @@ def construir_model(data):
     model.addConstrs((u_s_l_t[s,l,t] >= y_s_l_t[s,l,t] for s in S for t in T for l in L), name = "min_iluminacion_diaria")
     #R4:  Límite de luces por sector
     ## Pendiente por ver el último periodo
-    model.addConstrs((sum(x_s_l_t[s, l, t] * data["p_l"][l] for s in S for l in L for t in T)>=data["P_min_s"][s] for s in S), name = "limite_luces")
+    model.addConstrs((sum(x_s_l_t[s, l, t] * data["p_l"][l] for s in S for l in L for t in T)>=data["P_min_s"][(s,t)] for s in S for t in T), name = "limite_luces")
     #R5: Límite de luces por sector
     model.addConstrs((sum(x_s_l_t[s,l,t] for s in S for l in L for t in T)<=data["Ns_max"][s] for s in S), name = "limite de luces por sector")
     #R6: Compatibilidad luminaria con el sector
@@ -127,8 +141,8 @@ def construir_model(data):
     #R7: Límite de distintos tipos de luminarias por sector
     model.addConstrs((sum(y_s_l_t[s,l,t] for s in S for l in L for t in T)<= data["K_s"][s] for s in S))
     #R8: Activar desuento asociado a superar la iluminación permitida
-    model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)>= data["P_max_s"][s]*zi_s_t[s,t] for s in S for t in T), name = "iluminacion maxima")
-    model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)<= data["P_max_s"][s] + data["M"]*zi_s_t[s,t] for s in S for t in T), name = "iluminacion maxima 2")
+    model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)>= data["P_max_s"][(s,t)]*zi_s_t[s,t] for s in S for t in T), name = "iluminacion maxima")
+    model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)<= data["P_max_s"][(s,t)] + data["M"]*zi_s_t[s,t] for s in S for t in T), name = "iluminacion maxima 2")
     #R9: descuento asociado a la iluminacion permitido:
     model.addConstrs((wi_s_t[s,t] >= data["G"]*sum(data["p_l"][l]*x_s_l_t[s,l,t]-data["M"]*(1-zi_s_t[s,t]) for s in S for l in L for t in T) for s in S for t in T), name= "dcto por ilumnacion")
     #R10: Activación del descuento 

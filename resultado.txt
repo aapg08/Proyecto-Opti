@@ -1,9 +1,9 @@
 Características del modelo:
 - Valor objetivo: 0.04
 - GAP final: 0.0000
-- Tiempo de resolución: 0.16 segundos
-- Nº variables: 1755
-- Nº restricciones: 1818
-- Dimensiones: |S|=9, |L|=5, |T|=9
+- Tiempo de resolución: 0.15 segundos
+- Nº variables: 1565
+- Nº restricciones: 1682
+- Dimensiones: |S|=9, |L|=5, |T|=8
 Luminarias instaladas (x_s_l_t > 0):
-- Sector 9, Luminaria 5, Periodo 9: 1.00 unidades
+- Sector 9, Luminaria 5, Periodo 8: 1.00 unidades
