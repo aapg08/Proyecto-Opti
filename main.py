@@ -95,12 +95,11 @@ def construir_model(data):
     model.setObjective(quicksum(x_s_l_t[s, l, t]*data["alpha"][s]*data["p_l"][l] for s in S for l in L for t in T))
 
     #R1 No superar el presupuesto de municipio: Flujo de caja
-    t = 1 
     model.addConstr(
-        j_t[t] == data["B"]
-        - quicksum(data["C_l"][l] * x_s_l_t[s, l, t] for s in S for l in L)
-        - quicksum(data["CM_l"][l] * u_s_l_t[s, l, t] for s in S for l in L)
-        - quicksum(wi_s_t[s,t] for s in S) - quicksum(we_s_t[s,t] for s in S) + quicksum(wf_s_t[s,t] for s in S),
+        j_t[1] >= data["B"]
+        - quicksum(data["C_l"][l] * x_s_l_t[s, l, 1] for s in S for l in L)
+        - quicksum(data["CM_l"][l] * u_s_l_t[s, l, 1] for s in S for l in L)
+        - quicksum(wi_s_t[s,1] for s in S) - quicksum(we_s_t[s,1] for s in S) + quicksum(wf_s_t[s,1] for s in S),
         name="Flujo_caja_t1"
     )
     for t in T:
@@ -170,10 +169,38 @@ def imprimir(model,data,x_s_l_t):
     else:
         print("No se encontró una solución óptima.")
 
+    
+def guardar_resultado(model, data, x_s_l_t):
+    with open("resultado.txt", "w", encoding="utf-8") as f:
+        if model.Status == GRB.OPTIMAL:
+            # Información general del modelo
+            f.write("Características del modelo:\n")
+            f.write(f"- Valor objetivo: {model.ObjVal:.2f}\n")
+            if model.IsMIP:
+                f.write(f"- GAP final: {model.MIPGap:.4f}\n")
+            f.write(f"- Tiempo de resolución: {model.Runtime:.2f} segundos\n")
+            f.write(f"- Nº variables: {model.NumVars}\n")
+            f.write(f"- Nº restricciones: {model.NumConstrs}\n")
+            f.write(f"- Dimensiones: |S|={len(data['S'])}, |L|={len(data['L'])}, |T|={len(data['T'])}\n")
+
+            # Imprimir solo variables activas
+            f.write("Luminarias instaladas (x_s_l_t > 0):\n")
+            for s in data["S"]:
+                for l in data["L"]:
+                    for t in data["T"]:
+                        val = x_s_l_t[s, l, t].X
+                        if val > 1e-6:
+                            f.write(f"- Sector {s}, Luminaria {l}, Periodo {t}: {val:.2f} unidades\n")
+
+        else:
+            f.write("No se encontró una solución óptima.\n")
+
+
 def main():
     data = cargar_datos()
     modelo, x = construir_model(data)
     resultado = resolver_modelo(modelo)
+    guardar_resultado(resultado, data, x)
     imprimir(resultado,data,x)
 
 if __name__ == "__main__":
