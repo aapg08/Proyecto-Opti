@@ -58,7 +58,7 @@ def cargar_datos():
     #Conjunto de tipos de luminarias
     L = range(1,len(tipos_luminarias))
     #Conjunto de periodos
-    T = range(1,6)
+    T = range(1,10)
 
     datos = {
         "S": S, "L": L, "T": T, "alpha": alpha, "Tipos luminarias": tipos_luminarias,
@@ -79,15 +79,15 @@ def construir_model(data):
 
     #Variables de decisión
 
-    x_s_l_t = model.addVars(S, L, T, name = "x_s_l_t", lb = 0)
+    x_s_l_t = model.addVars(S, L, T, name = "x_s_l_t",vtype= GRB.INTEGER, lb = 0)
     y_s_l_t = model.addVars(S, L, T, vtype= GRB.BINARY, name = "y_s_l_t")
     u_s_l_t = model.addVars(S, L, T,vtype= GRB.BINARY, name = "u_s_l_t")
     zi_s_t = model.addVars(S, T,vtype= GRB.BINARY, name = "zi_s_t")
     ze_s_t = model.addVars(S,T,vtype= GRB.BINARY, name = "ze_t")
     zf_s_t = model.addVars(S,T,vtype= GRB.BINARY, name = "zf_t")
-    wi_s_t = model.addVars(S,T, name = "wi_t", lb = 0)
-    we_s_t = model.addVars(S,T, name = "we_t", lb = 0)
-    wf_s_t = model.addVars(S,T, name = "wf_t", lb = 0)
+    wi_s_t = model.addVars(S,T, name = "wi_t", vtype= GRB.CONTINUOUS, lb = 0)
+    we_s_t = model.addVars(S,T, name = "we_t", vtype= GRB.CONTINUOUS,  lb = 0)
+    wf_s_t = model.addVars(S,T, name = "wf_t",vtype= GRB.CONTINUOUS,  lb = 0)
     j_t = model.addVars(T, name = "j_t", lb = 0)
     L_l_s = model.addVars(L,S, vtype=GRB.BINARY, name = "L_l_s")
 
@@ -115,24 +115,23 @@ def construir_model(data):
             name="presupuesto_t"
         )
     #R2 Activación de la mantención solo si se instala la luminaria
-    model.addConstrs((x_s_l_t[s,l,t]<= data["M"]*y_s_l_t for s in S for l in L for t in T), name="xandu") 
+    model.addConstrs((x_s_l_t[s,l,t]<= data["M"]*y_s_l_t[s,l,t] for s in S for l in L for t in T), name="xandu") 
     #R3: Mínimo de iluminación diaria
     model.addConstrs((u_s_l_t[s,l,t] >= y_s_l_t[s,l,t] for s in S for t in T for l in L), name = "min_iluminacion_diaria")
     #R4:  Límite de luces por sector
     ## Pendiente por ver el último periodo
-    model.addConstrs((sum(x_s_l_t[s, l, t] * data["p_l"] for s in S for l in L for t in T)>=data["P_min_s"][s] for s in S), name = "limite_luces")
-    #R5: Compatibilidad luminaria con el sector
+    model.addConstrs((sum(x_s_l_t[s, l, t] * data["p_l"][l] for s in S for l in L for t in T)>=data["P_min_s"][s] for s in S), name = "limite_luces")
+    #R5: Límite de luces por sector
+    model.addConstrs((sum(x_s_l_t[s,l,t] for s in S for l in L for t in T)<=data["Ns_max"][s] for s in S), name = "limite de luces por sector")
+    #R6: Compatibilidad luminaria con el sector
     model.addConstrs((x_s_l_t[s, l ,t]<=L_l_s[l,s]*data["M"] for s in S for l in L for t in T), name="compatibilidad")
-    #R6:Vinculo variable x-y
-    model.addConstrs((y_s_l_t[s, l, t] <= x_s_l_t[s,l,t] for s in S for l in L for s in S), name= "vinculo x-y") 
-    model.addConstrs((x_s_l_t[s,l,t]<=data["M"] for s in S for l in L for t in T), name= "vinculo_big_M")
     #R7: Límite de distintos tipos de luminarias por sector
     model.addConstrs((sum(y_s_l_t[s,l,t] for s in S for l in L for t in T)<= data["K_s"][s] for s in S))
     #R8: Activar desuento asociado a superar la iluminación permitida
     model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)>= data["P_max_s"][s]*zi_s_t[s,t] for s in S for t in T), name = "iluminacion maxima")
     model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)<= data["P_max_s"][s] + data["M"]*zi_s_t[s,t] for s in S for t in T), name = "iluminacion maxima 2")
     #R9: descuento asociado a la iluminacion permitido:
-    model.addConstrs((wi_s_t[s,t] >= data["G"]*sum(data["p_l"][l]*x_s_l_t[s,l,t]-data["M"]*(1-zi_s_t[s,t]) for s in S for l in L for t in T) for s in S), name= "dcto por ilumnacion")
+    model.addConstrs((wi_s_t[s,t] >= data["G"]*sum(data["p_l"][l]*x_s_l_t[s,l,t]-data["M"]*(1-zi_s_t[s,t]) for s in S for l in L for t in T) for s in S for t in T), name= "dcto por ilumnacion")
     #R10: Activación del descuento 
     model.addConstrs((data["M"]*ze_s_t[s,t]+sum(data["Eficiencia"][l] * x_s_l_t[s,l,t] for l in L)>=data["R"] for s in S for t in T), name= "activación dcto")
     #R11: Definición de dcto. asociado a la eficiencia energética 
