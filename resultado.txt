@@ -1,9 +1,62 @@
 Características del modelo:
-- Valor objetivo: 0.04
+- Valor objetivo: 57.83
 - GAP final: 0.0000
-- Tiempo de resolución: 0.15 segundos
+- Tiempo de resolución: 0.13 segundos
 - Nº variables: 1565
-- Nº restricciones: 1682
+- Nº restricciones: 1313
 - Dimensiones: |S|=9, |L|=5, |T|=8
 Luminarias instaladas (x_s_l_t > 0):
-- Sector 9, Luminaria 5, Periodo 8: 1.00 unidades
+- Sector 1, Luminaria 3, Periodo 3: 1.00 unidades
+- Sector 1, Luminaria 3, Periodo 4: 1.00 unidades
+- Sector 1, Luminaria 3, Periodo 5: 1.00 unidades
+- Sector 1, Luminaria 3, Periodo 6: 116.00 unidades
+- Sector 1, Luminaria 3, Periodo 7: 1.00 unidades
+- Sector 2, Luminaria 3, Periodo 3: 1.00 unidades
+- Sector 2, Luminaria 3, Periodo 4: 1.00 unidades
+- Sector 2, Luminaria 3, Periodo 5: 95.00 unidades
+- Sector 2, Luminaria 3, Periodo 6: 1.00 unidades
+- Sector 2, Luminaria 3, Periodo 7: 1.00 unidades
+- Sector 2, Luminaria 3, Periodo 8: 1.00 unidades
+- Sector 3, Luminaria 3, Periodo 1: 1.00 unidades
+- Sector 3, Luminaria 3, Periodo 2: 83.00 unidades
+- Sector 3, Luminaria 3, Periodo 3: 1.00 unidades
+- Sector 3, Luminaria 3, Periodo 4: 1.00 unidades
+- Sector 3, Luminaria 3, Periodo 5: 1.00 unidades
+- Sector 3, Luminaria 3, Periodo 6: 1.00 unidades
+- Sector 3, Luminaria 3, Periodo 7: 1.00 unidades
+- Sector 3, Luminaria 3, Periodo 8: 1.00 unidades
+- Sector 4, Luminaria 3, Periodo 1: 94.00 unidades
+- Sector 4, Luminaria 3, Periodo 2: 1.00 unidades
+- Sector 4, Luminaria 3, Periodo 3: 1.00 unidades
+- Sector 4, Luminaria 3, Periodo 4: 1.00 unidades
+- Sector 4, Luminaria 3, Periodo 5: 1.00 unidades
+- Sector 4, Luminaria 3, Periodo 6: 1.00 unidades
+- Sector 4, Luminaria 3, Periodo 7: 1.00 unidades
+- Sector 5, Luminaria 3, Periodo 3: 1.00 unidades
+- Sector 5, Luminaria 3, Periodo 5: 77.00 unidades
+- Sector 5, Luminaria 3, Periodo 6: 1.00 unidades
+- Sector 5, Luminaria 3, Periodo 7: 1.00 unidades
+- Sector 6, Luminaria 3, Periodo 2: 1.00 unidades
+- Sector 6, Luminaria 3, Periodo 3: 1.00 unidades
+- Sector 6, Luminaria 3, Periodo 5: 96.00 unidades
+- Sector 6, Luminaria 3, Periodo 6: 1.00 unidades
+- Sector 6, Luminaria 3, Periodo 7: 1.00 unidades
+- Sector 7, Luminaria 3, Periodo 1: 114.00 unidades
+- Sector 7, Luminaria 3, Periodo 2: 1.00 unidades
+- Sector 7, Luminaria 3, Periodo 3: 1.00 unidades
+- Sector 7, Luminaria 3, Periodo 4: 1.00 unidades
+- Sector 7, Luminaria 3, Periodo 5: 1.00 unidades
+- Sector 7, Luminaria 3, Periodo 6: 1.00 unidades
+- Sector 7, Luminaria 3, Periodo 8: 1.00 unidades
+- Sector 8, Luminaria 3, Periodo 2: 1.00 unidades
+- Sector 8, Luminaria 3, Periodo 3: 1.00 unidades
+- Sector 8, Luminaria 3, Periodo 4: 74.00 unidades
+- Sector 8, Luminaria 3, Periodo 5: 1.00 unidades
+- Sector 8, Luminaria 3, Periodo 6: 1.00 unidades
+- Sector 8, Luminaria 3, Periodo 7: 1.00 unidades
+- Sector 8, Luminaria 3, Periodo 8: 1.00 unidades
+- Sector 9, Luminaria 3, Periodo 1: 1.00 unidades
+- Sector 9, Luminaria 3, Periodo 3: 1.00 unidades
+- Sector 9, Luminaria 3, Periodo 4: 1.00 unidades
+- Sector 9, Luminaria 3, Periodo 5: 1.00 unidades
+- Sector 9, Luminaria 3, Periodo 7: 96.00 unidades

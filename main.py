@@ -102,11 +102,11 @@ def construir_model(data):
     wi_s_t = model.addVars(S,T, name = "wi_t", vtype= GRB.CONTINUOUS, lb = 0)
     we_s_t = model.addVars(S,T, name = "we_t", vtype= GRB.CONTINUOUS,  lb = 0)
     wf_s_t = model.addVars(S,T, name = "wf_t",vtype= GRB.CONTINUOUS,  lb = 0)
-    j_t = model.addVars(T, name = "j_t", lb = 0)
+    j_t = model.addVars(T, name = "j_t", vtype= GRB.CONTINUOUS, lb = 0)
     L_l_s = model.addVars(L,S, vtype=GRB.BINARY, name = "L_l_s")
 
     #Función Objetivo
-    model.setObjective(quicksum(x_s_l_t[s, l, t]*data["alpha"][s]*data["p_l"][l] for s in S for l in L for t in T))
+    model.setObjective(quicksum(x_s_l_t[s, l, t]*data["alpha"][s]*data["p_l"][l] for s in S for l in L for t in T), GRB.MAXIMIZE)
 
     #R1 No superar el presupuesto de municipio: Flujo de caja
     model.addConstr(
@@ -128,38 +128,46 @@ def construir_model(data):
             name="presupuesto_t"
         )
     #R2 Activación de la mantención solo si se instala la luminaria
-    model.addConstrs((x_s_l_t[s,l,t]<= data["M"]*y_s_l_t[s,l,t] for s in S for l in L for t in T), name="xandu") 
+    #model.addConstrs((x_s_l_t[s,l,t]<= data["M"] for s in S for l in L for t in T), name="xandu") 
+    #model.addConstrs((x_s_l_t[s,l,t]>= 1 for s in S for l in L for t in T), name="xandu") 
+
     #R3: Mínimo de iluminación diaria
-    model.addConstrs((u_s_l_t[s,l,t] >= y_s_l_t[s,l,t] for s in S for t in T for l in L), name = "min_iluminacion_diaria")
+    model.addConstrs((u_s_l_t[s,l,t] <= y_s_l_t[s,l,t] for s in S for t in T for l in L), name = "min_iluminacion_diaria")
     #R4:  Límite de luces por sector
     ## Pendiente por ver el último periodo
     model.addConstrs((sum(x_s_l_t[s, l, t] * data["p_l"][l] for s in S for l in L for t in T)>=data["P_min_s"][(s,t)] for s in S for t in T), name = "limite_luces")
     #R5: Límite de luces por sector
-    model.addConstrs((sum(x_s_l_t[s,l,t] for s in S for l in L for t in T)<=data["Ns_max"][s] for s in S), name = "limite de luces por sector")
+    model.addConstrs((
+    quicksum(x_s_l_t[s, l, t] for l in L for t in T) <= data["Ns_max"][s]
+    for s in S),
+    name="limite_luminarias_totales_por_sector")
     #R6: Compatibilidad luminaria con el sector
     model.addConstrs((x_s_l_t[s, l ,t]<=L_l_s[l,s]*data["M"] for s in S for l in L for t in T), name="compatibilidad")
     #R7: Límite de distintos tipos de luminarias por sector
-    model.addConstrs((sum(y_s_l_t[s,l,t] for s in S for l in L for t in T)<= data["K_s"][s] for s in S))
+    # model.addConstrs((
+    # quicksum(y_s_l_t[s, l, t] for l in L for t in T) <= data["K_s"][s]
+    # for s in S),
+    # name="limite_tipos_luminarias_por_sector")
     #R8: Activar desuento asociado a superar la iluminación permitida
     model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)>= data["P_max_s"][(s,t)]*zi_s_t[s,t] for s in S for t in T), name = "iluminacion maxima")
     model.addConstrs((sum(data["p_l"][l]*x_s_l_t[s,l,t] for s in S for l in L for t in T)<= data["P_max_s"][(s,t)] + data["M"]*zi_s_t[s,t] for s in S for t in T), name = "iluminacion maxima 2")
-    #R9: descuento asociado a la iluminacion permitido:
+    # #R9: descuento asociado a la iluminacion permitido:
     model.addConstrs((wi_s_t[s,t] >= data["G"]*sum(data["p_l"][l]*x_s_l_t[s,l,t]-data["M"]*(1-zi_s_t[s,t]) for s in S for l in L for t in T) for s in S for t in T), name= "dcto por ilumnacion")
-    #R10: Activación del descuento 
+    # #R10: Activación del descuento 
     model.addConstrs((data["M"]*ze_s_t[s,t]+sum(data["Eficiencia"][l] * x_s_l_t[s,l,t] for l in L)>=data["R"] for s in S for t in T), name= "activación dcto")
-    #R11: Definición de dcto. asociado a la eficiencia energética 
+    # #R11: Definición de dcto. asociado a la eficiencia energética 
     model.addConstrs((we_s_t[s, t] >= data["Ae"]*ze_s_t[s, t] for s in S for t in T), name = "descuento eficiencia")
     #R12: Activación de bonificación en caso de usar luminarias
     model.addConstrs(quicksum(x_s_l_t[s,l,t] for s in S for l in L_solar for t in T)>= data["F"]*zf_s_t[s,t] for s in S for t in T)
     #R13: Definición de bono en caso de usar luminarias tipo l*
     model.addConstrs((wf_s_t[s, t] <= data["Af"]*zf_s_t[s, t] for s in S for t in T), name = "bono solar")
-    return model, x_s_l_t
+    return model, x_s_l_t, y_s_l_t
 
 def resolver_modelo (model):
     model.optimize()
     return model
 
-def imprimir(model,data,x_s_l_t):
+def imprimir(model,data,x_s_l_t,u_s_l_t):
     if model.Status == GRB.OPTIMAL:
         # Información general del modelo
         print("Características del modelo:")
@@ -170,8 +178,9 @@ def imprimir(model,data,x_s_l_t):
         print(f"- Nº variables: {model.NumVars}")
         print(f"- Nº restricciones: {model.NumConstrs}")
         print(f"- Dimensiones: |S|={len(data['S'])}, |L|={len(data['L'])}, |T|={len(data['T'])}\n")
+        
 
-        # Imprimir solo variables activas
+        #Imprimir solo variables activas
         print("Luminarias instaladas (x_s_l_t > 0):")
         for s in data["S"]:
             for l in data["L"]:
@@ -179,10 +188,8 @@ def imprimir(model,data,x_s_l_t):
                     val = x_s_l_t[s, l, t].X
                     if val > 1e-6:
                         print(f"- Sector {s}, Luminaria {l}, Periodo {t}: {val:.2f} unidades")
-
     else:
         print("No se encontró una solución óptima.")
-
     
 def guardar_resultado(model, data, x_s_l_t):
     with open("resultado.txt", "w", encoding="utf-8") as f:
@@ -212,10 +219,10 @@ def guardar_resultado(model, data, x_s_l_t):
 
 def main():
     data = cargar_datos()
-    modelo, x = construir_model(data)
+    modelo, x, y = construir_model(data)
     resultado = resolver_modelo(modelo)
     guardar_resultado(resultado, data, x)
-    imprimir(resultado,data,x)
+    imprimir(resultado,data,x,y)
 
 if __name__ == "__main__":
     main() 
