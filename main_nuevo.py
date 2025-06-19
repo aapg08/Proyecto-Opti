@@ -224,7 +224,7 @@ def imprimir(model,data,x_s_l_t, bono, zf_s_t):
                     
                     if val > 1e-6:
                         print(f"- Sector {s}, Luminaria {l}, Periodo {t}: {val:.2f} unidades")
-                        
+
                         if l in data["L*"]:
                             print(f"                      ¿Se recibe bono?: Si")
                             bono1 = bono[s,t].X
@@ -239,7 +239,7 @@ def guardar_resultado(model, data, x_s_l_t, bono):
     with open("resultado.txt", "w", encoding="utf-8") as f:
         if model.Status == GRB.OPTIMAL:
             # Información general del modelo
-            f.write("Características del modelo:\n")
+            f.write("CARACTERÍSTICAS DEL MODELO:\n")
             f.write(f"- Valor objetivo: {model.ObjVal:.2f}\n")
             if model.IsMIP:
                 f.write(f"- GAP final: {model.MIPGap:.4f}\n")
@@ -248,13 +248,15 @@ def guardar_resultado(model, data, x_s_l_t, bono):
             f.write(f"- Nº restricciones: {model.NumConstrs}\n")
             f.write(f"- Dimensiones: |S|={len(data['S'])}, |L|={len(data['L'])}, |T|={len(data['T'])}\n")
 
+            f.write("\n")
             # Imprimir solo variables activas
-            f.write("Luminarias instaladas (x_s_l_t > 0):\n")
+            f.write("LUMINARIAS INSTALADAS (x_s_l_t > 0):\n")
             for s in data["S"]:
                 for l in data["L"]:
                     for t in data["T"]:
                         val = x_s_l_t[s, l, t].X
                         if val > 1e-6:
+                            f.write("------------------------------------------------------------------\n")
                             f.write(f"- Sector {s}, Luminaria {l}, Periodo {t}: {val:.2f} unidades\n")
                             if l in data["L*"]:
                                 f.write(f"                      ¿Se recibe bono?: Si\n")
@@ -262,6 +264,7 @@ def guardar_resultado(model, data, x_s_l_t, bono):
                                 f.write(f"                      Bono recibido: ${bono1}\n")
                             else:
                                 f.write(f"                      ¿Se recibe bono?: No\n")
+                            f.write("------------------------------------------------------------------\n")
 
         else:
             f.write("No se encontró una solución óptima.\n")
