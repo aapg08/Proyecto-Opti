@@ -1,7 +1,7 @@
 ﻿Indice;Nombre;Potencia;lumenes;area iluminada;p_l;Iluminancia maxima;Eficiencia;b_l;Costo de compra e instalacion;CM_l;Fuente de energia
-1;asimetrico;120;6000;100;60;30;130;0;210000;13500;electrica
+1;panel fotovoltaico;100;4000;90;44.4;25;180;0;4290000;7500;solar
 2;haz abierto;100;5000;80;62.5;25;130;0;180000;11250;electrica
 3;haz intenso;150;7000;120;58.3;40;130;0;220000;15000;electrica
 4;haz cerrado;100;6500;90;72.2;35;130;0;185000;11250;electrica
-5;haz amplio;150;7200;110;65.5;20;130;0;225000;15000;electrica
-6;panel fotovoltaico;100;4000;90;44.4;25;180;0;4290000;7500;solar
+5;asimetrico;120;6000;100;60;30;130;0;210000;13500;electrica
+6;haz amplio;150;7200;110;65.5;20;130;0;225000;15000;electrica
