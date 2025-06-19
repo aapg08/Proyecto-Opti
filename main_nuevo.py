@@ -219,7 +219,7 @@ def imprimir(model,data,x_s_l_t, bono, zf_s_t):
         print(f"- Nº restricciones: {model.NumConstrs}")
         print(f"- Dimensiones: |S|={len(data['S'])}, |L|={len(data['L'])}, |T|={len(data['T'])}\n")
         
-
+        total = 0
         #Imprimir solo variables activas
         print("Luminarias instaladas (x_s_l_t > 0):")
         for s in data["S"]:
@@ -230,6 +230,7 @@ def imprimir(model,data,x_s_l_t, bono, zf_s_t):
                     
                     if val > 1e-6:
                         print(f"- Sector {s}, Luminaria {l}, Periodo {t}: {val:.2f} unidades")
+                        total += val
 
                         if l in data["L*"]:
                             print(f"                      ¿Se recibe bono?: Si")
@@ -240,6 +241,7 @@ def imprimir(model,data,x_s_l_t, bono, zf_s_t):
 
     else:
         print("No se encontró una solución óptima.")
+    print(f"\nTotal de luminarias instaladas: {int(total)} unidades")
     
 def guardar_resultado(model, data, x_s_l_t, bono):
     with open("resultado.txt", "w", encoding="utf-8") as f:
@@ -253,7 +255,7 @@ def guardar_resultado(model, data, x_s_l_t, bono):
             f.write(f"- Nº variables: {model.NumVars}\n")
             f.write(f"- Nº restricciones: {model.NumConstrs}\n")
             f.write(f"- Dimensiones: |S|={len(data['S'])}, |L|={len(data['L'])}, |T|={len(data['T'])}\n")
-
+            total = 0
             f.write("\n")
             # Imprimir solo variables activas
             f.write("LUMINARIAS INSTALADAS (x_s_l_t > 0):\n")
@@ -262,6 +264,7 @@ def guardar_resultado(model, data, x_s_l_t, bono):
                     for t in data["T"]:
                         val = x_s_l_t[s, l, t].X
                         if val > 1e-6:
+                            total += val
                             f.write("------------------------------------------------------------------\n")
                             f.write(f"- Sector {s}, Luminaria {l}, Periodo {t}: {val:.2f} unidades\n")
                             if l in data["L*"]:
@@ -274,6 +277,8 @@ def guardar_resultado(model, data, x_s_l_t, bono):
 
         else:
             f.write("No se encontró una solución óptima.\n")
+
+        f.write(f"\nTotal de luminarias instaladas: {int(total)} unidades")
 
 
 def main():

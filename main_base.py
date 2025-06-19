@@ -132,7 +132,8 @@ def construir_model(data):
     #model.addConstrs((x_s_l_t[s,l,t]>= 1 for s in S for l in L for t in T), name="xandu") 
 
     #R3: Mínimo de iluminación diaria
-    model.addConstrs((u_s_l_t[s,l,t] <= y_s_l_t[s,l,t] for s in S for t in T for l in L), name = "min_iluminacion_diaria")
+    # model.addConstrs((u_s_l_t[s,l,t] <= y_s_l_t[s,l,t] for s in S for t in T for l in L), name = "min_iluminacion_diaria")
+    
     #R4:  Límite de luces por sector
     ## Pendiente por ver el último periodo
     model.addConstrs((sum(x_s_l_t[s, l, t] * data["p_l"][l] for s in S for l in L for t in T)>=data["P_min_s"][(s,t)] for s in S for t in T), name = "limite_luces")

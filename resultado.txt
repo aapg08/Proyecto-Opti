@@ -1,7 +1,7 @@
 CARACTERÍSTICAS DEL MODELO:
 - Valor objetivo: 55.47
 - GAP final: 0.0000
-- Tiempo de resolución: 0.07 segundos
+- Tiempo de resolución: 0.08 segundos
 - Nº variables: 1205
 - Nº restricciones: 958
 - Dimensiones: |S|=9, |L|=5, |T|=8
@@ -147,3 +147,5 @@ LUMINARIAS INSTALADAS (x_s_l_t > 0):
 - Sector 9, Luminaria 2, Periodo 7: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
+
+Total de luminarias instaladas: 890 unidades
