@@ -1,110 +1,142 @@
 CARACTERÍSTICAS DEL MODELO:
-- Valor objetivo: 55.47
+- Valor objetivo: 61.89
 - GAP final: 0.0000
-- Tiempo de resolución: 0.08 segundos
-- Nº variables: 1205
-- Nº restricciones: 958
-- Dimensiones: |S|=9, |L|=5, |T|=8
+- Tiempo de resolución: 0.15 segundos
+- Nº variables: 1508
+- Nº restricciones: 1143
+- Dimensiones: |S|=10, |L|=6, |T|=8
 
 LUMINARIAS INSTALADAS (x_s_l_t > 0):
 ------------------------------------------------------------------
-- Sector 1, Luminaria 3, Periodo 1: 118.00 unidades
+- Sector 1, Luminaria 4, Periodo 1: 97.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 1, Luminaria 3, Periodo 2: 1.00 unidades
+- Sector 1, Luminaria 4, Periodo 3: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 1, Luminaria 3, Periodo 3: 1.00 unidades
+- Sector 1, Luminaria 4, Periodo 4: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 2, Luminaria 5, Periodo 1: 98.00 unidades
+- Sector 1, Luminaria 4, Periodo 5: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 2, Luminaria 5, Periodo 2: 1.00 unidades
+- Sector 2, Luminaria 4, Periodo 1: 116.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 2, Luminaria 5, Periodo 3: 1.00 unidades
+- Sector 2, Luminaria 4, Periodo 2: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 3, Luminaria 3, Periodo 1: 89.00 unidades
+- Sector 2, Luminaria 4, Periodo 4: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 3, Luminaria 3, Periodo 3: 1.00 unidades
+- Sector 2, Luminaria 4, Periodo 6: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 4, Luminaria 3, Periodo 1: 96.00 unidades
+- Sector 2, Luminaria 4, Periodo 8: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 4, Luminaria 3, Periodo 2: 1.00 unidades
+- Sector 3, Luminaria 3, Periodo 5: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 4, Luminaria 3, Periodo 3: 1.00 unidades
+- Sector 3, Luminaria 6, Periodo 1: 97.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 4, Luminaria 3, Periodo 4: 1.00 unidades
+- Sector 3, Luminaria 6, Periodo 2: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 4, Luminaria 3, Periodo 6: 1.00 unidades
+- Sector 3, Luminaria 6, Periodo 3: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 5, Luminaria 3, Periodo 1: 78.00 unidades
+- Sector 4, Luminaria 4, Periodo 1: 89.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 5, Luminaria 3, Periodo 3: 1.00 unidades
+- Sector 4, Luminaria 4, Periodo 3: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 5, Luminaria 3, Periodo 6: 1.00 unidades
+- Sector 5, Luminaria 6, Periodo 1: 95.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 6, Luminaria 3, Periodo 1: 98.00 unidades
+- Sector 5, Luminaria 6, Periodo 4: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 6, Luminaria 3, Periodo 4: 1.00 unidades
+- Sector 5, Luminaria 6, Periodo 5: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 6, Luminaria 3, Periodo 6: 1.00 unidades
+- Sector 5, Luminaria 6, Periodo 6: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 7, Luminaria 3, Periodo 1: 116.00 unidades
+- Sector 5, Luminaria 6, Periodo 7: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 7, Luminaria 3, Periodo 2: 1.00 unidades
+- Sector 5, Luminaria 6, Periodo 8: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 7, Luminaria 3, Periodo 3: 1.00 unidades
+- Sector 6, Luminaria 4, Periodo 1: 76.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 7, Luminaria 3, Periodo 4: 1.00 unidades
+- Sector 6, Luminaria 4, Periodo 2: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 7, Luminaria 3, Periodo 6: 1.00 unidades
+- Sector 6, Luminaria 4, Periodo 5: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 8, Luminaria 4, Periodo 1: 76.00 unidades
+- Sector 6, Luminaria 4, Periodo 6: 1.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
+- Sector 6, Luminaria 4, Periodo 8: 1.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
+- Sector 7, Luminaria 2, Periodo 4: 1.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
+- Sector 7, Luminaria 5, Periodo 3: 1.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
+- Sector 7, Luminaria 6, Periodo 1: 95.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
+- Sector 7, Luminaria 6, Periodo 2: 1.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
+- Sector 7, Luminaria 6, Periodo 5: 1.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
+- Sector 7, Luminaria 6, Periodo 7: 1.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
+- Sector 8, Luminaria 4, Periodo 1: 115.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
@@ -120,32 +152,61 @@ LUMINARIAS INSTALADAS (x_s_l_t > 0):
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
+- Sector 8, Luminaria 4, Periodo 6: 1.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
 - Sector 8, Luminaria 4, Periodo 8: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 9, Luminaria 1, Periodo 1: 96.00 unidades
+- Sector 9, Luminaria 4, Periodo 1: 76.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
+- Sector 9, Luminaria 4, Periodo 2: 1.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
+- Sector 9, Luminaria 4, Periodo 3: 1.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
+- Sector 9, Luminaria 4, Periodo 4: 1.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
+- Sector 9, Luminaria 4, Periodo 7: 1.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
+- Sector 10, Luminaria 1, Periodo 5: 1.00 unidades
                       ¿Se recibe bono?: Si
                       Bono recibido: $50000.0
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 9, Luminaria 1, Periodo 3: 1.00 unidades
-                      ¿Se recibe bono?: Si
-                      Bono recibido: $50000.0
+- Sector 10, Luminaria 6, Periodo 1: 94.00 unidades
+                      ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 9, Luminaria 1, Periodo 5: 1.00 unidades
-                      ¿Se recibe bono?: Si
-                      Bono recibido: $50000.0
+- Sector 10, Luminaria 6, Periodo 3: 1.00 unidades
+                      ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 9, Luminaria 1, Periodo 8: 1.00 unidades
-                      ¿Se recibe bono?: Si
-                      Bono recibido: $50000.0
+- Sector 10, Luminaria 6, Periodo 4: 1.00 unidades
+                      ¿Se recibe bono?: No
 ------------------------------------------------------------------
 ------------------------------------------------------------------
-- Sector 9, Luminaria 2, Periodo 7: 1.00 unidades
+- Sector 10, Luminaria 6, Periodo 6: 1.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
+- Sector 10, Luminaria 6, Periodo 7: 1.00 unidades
+                      ¿Se recibe bono?: No
+------------------------------------------------------------------
+------------------------------------------------------------------
+- Sector 10, Luminaria 6, Periodo 8: 1.00 unidades
                       ¿Se recibe bono?: No
 ------------------------------------------------------------------
 
-Total de luminarias instaladas: 890 unidades
+Total de luminarias instaladas: 990 unidades

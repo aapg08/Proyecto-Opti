@@ -13,10 +13,10 @@ def cargar_datos():
     luminarias = luminarias_ex.to_dict()
     # Parámetros del modelo
     tipos_luminarias = luminarias_ex["Indice"]
-    CM_l = luminarias["CM_l"]
-    costo_compra = luminarias["Costo de compra e instalacion"]
-    eficiencia = luminarias["Eficiencia"]
-    p_l = luminarias["p_l"]
+    CM_l = {int(row["Indice"]): row["CM_l"] for _, row in luminarias_ex.iterrows()}
+    costo_compra = {int(row["Indice"]): row["Costo de compra e instalacion"] for _, row in luminarias_ex.iterrows()}
+    eficiencia = {int(row["Indice"]): row["Eficiencia"] for _, row in luminarias_ex.iterrows()}
+    p_l = {int(row["Indice"]): row["p_l"] for _, row in luminarias_ex.iterrows()}
     iluminancia_max = luminarias["Iluminancia maxima"]
     luminarias_solares_ex = luminarias_ex[luminarias_ex["Fuente de energia"] == "solar"]
     l_solar_aux = luminarias_solares_ex["Indice"].tolist()
@@ -45,10 +45,9 @@ def cargar_datos():
     sectores_ex = lectura("sectores.csv")
     sectores = sectores_ex.to_dict()
     #Parámetros asociados a sectores
-    num_sectores = sectores["Sectores"]
-    alpha = sectores["alpha"]
-    K_s = sectores["K_s"]
-    Ns_max = sectores["Ns_max"]
+    alpha = {int(row["Sectores"]): row["alpha"] for _, row in sectores_ex.iterrows()}
+    K_s = {int(row["Sectores"]): row["K_s"] for _, row in sectores_ex.iterrows()}
+    Ns_max = {int(row["Sectores"]): row["Ns_max"] for _, row in sectores_ex.iterrows()}
     M = 1e6
 
     periodos_ex = lectura("periodos.csv")
@@ -66,10 +65,11 @@ def cargar_datos():
 
     # CONJUNTOS
     #conjunto de sectores
-    S = range(1,len(num_sectores))
+    S = sorted(sectores_ex["Sectores"].unique())
     print(S)
+    num_sectores = len(S)
     #Conjunto de tipos de luminarias
-    L = range(1,len(tipos_luminarias))
+    L = sorted(luminarias_ex["Indice"].unique())
     #Conjunto de periodos
     # T = range(1,10)
     T = sorted(list(set(row["Periodos"] for _, row in periodos_ex.iterrows())))
